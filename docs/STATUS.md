@@ -3,7 +3,8 @@
 Updated: 2026-10-25 · Milestone: M0 Setup · Keep this file under 40 lines.
 
 ## Done
-- M0-01 Repo scaffold: rules, ledger, hooks, agents, CI and security workflows, Dependabot, pre-commit.
+- M0-01 Repo scaffold: rules, ledger, hooks, agents, CI and security workflows, Dependabot, pre-commit. Merged (#1).
+- M0-01b Exact settings steps; Dependabot docker entry deferred to the first Dockerfile.
 
 ## In progress
 - Scope (separate thread); results go into `docs/SPEC.md`. Stack set: D-002.
@@ -13,4 +14,4 @@ Updated: 2026-10-25 · Milestone: M0 Setup · Keep this file under 40 lines.
 - M0-03 First feature brainstorm with John (`superpowers:brainstorming`), then a plan in `docs/superpowers/plans/`.
 
 ## Blocked / waiting on John
-- The GitHub settings in `docs/setup/JOHN-STEPS.md` (about 10 minutes of clicks).
+- The GitHub settings in `docs/setup/JOHN-STEPS.md` (about 15 minutes).

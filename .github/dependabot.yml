@@ -28,14 +28,4 @@ updates:
         patterns: ["*"]
     commit-message:
       prefix: deps
-  - package-ecosystem: docker
-    directories: ["**/*"]
-    schedule:
-      interval: weekly
-    cooldown:
-      default-days: 7
-    groups:
-      docker:
-        patterns: ["*"]
-    commit-message:
-      prefix: deps
+  # docker: add an entry per Dockerfile directory with the first Dockerfile (an entry with none errors).
