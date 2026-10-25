@@ -78,8 +78,6 @@ Click **Save** under each section you changed.
 3. Back in GitHub: **Settings > Secrets and variables > Actions > Secrets** tab > **New repository secret**.
    Name: `ANTHROPIC_API_KEY` · Secret: paste the key · **Add secret**.
 
-## Step 7. Only if you will run Claude Code or commit on your own computer
-Skip this if you only work through Claude in the cloud.
-1. In a terminal, in your copy of the repo: `pipx install pre-commit` then `pre-commit install`.
+No local setup is needed: the project is cloud-only. CI runs the same secret and workflow checks the pre-commit hooks would, and Superpowers loads from `.claude/settings.json`.
 
 When done, tell Claude in the thread "settings done".
