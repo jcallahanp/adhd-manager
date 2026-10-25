@@ -1,0 +1,41 @@
+version: 2
+# One npm entry covers the whole pnpm workspace (D-002). Grouping keeps the PR count low.
+# The 7-day cooldown lets a hijacked release be caught before we take it; security updates skip it.
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      dev-dependencies:
+        dependency-type: development
+      expo:
+        patterns: ["expo", "expo-*", "@expo/*", "react-native", "react-native-*"]
+      next:
+        patterns: ["next", "react", "react-dom", "@next/*"]
+    commit-message:
+      prefix: deps
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: deps
+  - package-ecosystem: docker
+    directories: ["**/*"]
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      docker:
+        patterns: ["*"]
+    commit-message:
+      prefix: deps

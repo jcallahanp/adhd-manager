@@ -1,0 +1,14 @@
+.superpowers/
+.env
+*.env
+!.env.example
+.claude/settings.local.json
+node_modules/
+dist/
+build/
+.next/
+__pycache__/
+*.pyc
+.venv/
+coverage/
+.DS_Store

@@ -1,0 +1,98 @@
+name: security-gate
+# Milestone gate (security/README.md): SAST with Semgrep, container image scan, DAST with ZAP, TLS check.
+on:
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: Staging base URL (https://...). Leave empty to skip ZAP and TLS.
+        required: false
+        default: ""
+      openapi_path:
+        description: Path of the OpenAPI schema on the target, for the ZAP API scan.
+        required: false
+        default: "/openapi.json"
+  push:
+    tags: ["m*"]
+
+permissions:
+  contents: read
+
+jobs:
+  sast:
+    name: Semgrep
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: pipx install semgrep
+      - run: semgrep scan --config p/default --config p/owasp-top-ten --config p/secrets --sarif -o semgrep.sarif || true
+      - run: jq -r '.runs[].results[] | "SEMGREP \(.level) \(.ruleId) \(.locations[0].physicalLocation.artifactLocation.uri):\(.locations[0].physicalLocation.region.startLine)"' semgrep.sarif || true
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: sast
+          path: semgrep.sarif
+
+  images:
+    name: Build and scan images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build every Dockerfile
+        run: |
+          : > images.txt
+          for f in $(git ls-files '*Dockerfile'); do
+            tag="scan/$(dirname "$f" | tr '/' '-' | tr -c 'a-z0-9-\n' '-'):ci"
+            docker build -t "$tag" -f "$f" "$(dirname "$f")" && echo "$tag" >> images.txt
+          done
+          cat images.txt
+      - name: Install Trivy
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/aquasecurity/trivy/v0.69.3/contrib/install.sh | sh -s -- -b /usr/local/bin v0.69.3
+      - name: Trivy image scan
+        run: |
+          while read -r img; do trivy image --severity CRITICAL,HIGH --ignore-unfixed --format json -o "trivy-$(echo "$img" | tr '/:' '--').json" "$img"; done < images.txt
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: images
+          path: trivy-*.json
+          if-no-files-found: ignore
+
+  dast:
+    name: ZAP baseline/full and API scan
+    if: github.event.inputs.target_url != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: zaproxy/action-full-scan@3c58388149901b9a03b7718852c5ba889646c27c # v0.13.0
+        with:
+          target: ${{ github.event.inputs.target_url }}
+          artifact_name: zap-full
+          allow_issue_writing: false
+          cmd_options: '-a -m 5 -z "-config scanner.maxScanDurationInMins=25"'
+      - uses: zaproxy/action-api-scan@5158fe4d9d8fcc75ea204db81317cce7f9e5453d # v0.10.0
+        continue-on-error: true
+        with:
+          target: ${{ github.event.inputs.target_url }}${{ github.event.inputs.openapi_path }}
+          format: openapi
+          artifact_name: zap-api
+          allow_issue_writing: false
+
+  tls:
+    name: testssl.sh
+    if: github.event.inputs.target_url != ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: testssl.sh
+        env:
+          TARGET_URL: ${{ github.event.inputs.target_url }}
+        run: |
+          host="$(echo "$TARGET_URL" | sed -E 's#https?://##; s#/.*##')"
+          mkdir -p out && chmod 777 out
+          docker run --rm -v "$PWD/out:/out" drwetter/testssl.sh:3.2 --quiet --color 0 --jsonfile /out/testssl.json "$host" | tee out/testssl.txt || true
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: tls
+          path: out/
