@@ -15,21 +15,26 @@ All pages are under github.com/jcallahanp/adhd-manager > **Settings** (top tab).
 | Allow auto-merge | Unchecked |
 | Automatically delete head branches | Checked |
 
-## Step 2. Left sidebar > Advanced Security (under "Security")
-Click **Enable** next to each of these. Some may already show "Disable", meaning they are on; leave those.
-| Setting | Set to |
+## Step 2. Left sidebar > Advanced Security
+Go down the page in this order. Anything not listed: leave as is.
+| Item | Do this |
 | --- | --- |
-| Private vulnerability reporting | Enabled |
-| Dependency graph | Enabled (always on for public repos) |
-| Dependabot alerts | Enabled |
-| Dependabot security updates | Enabled |
-| Grouped security updates | Enabled |
-| Dependabot on Actions runners | Leave as is |
-| Secret Protection / Secret scanning | Enabled |
-| Push protection | Enabled |
-| Copilot Autofix | Leave as is |
+| Private vulnerability reporting | Click **Enable** |
+| Dependency graph | Leave **On** |
+| Automatic dependency submission | Leave as is (not used for pnpm) |
+| Dependabot alerts, Malware alerts | Leave **On** |
+| Dependabot auto-triage rules | Leave as is |
+| Dependabot security updates | Leave **On** |
+| Grouped security updates | Leave **On** |
+| Dependabot version updates | Nothing (`.github/dependabot.yml` configures it) |
+| Other tools | Nothing |
+| AI Scan for pull requests | Leave **Off** (the Claude security review covers it) |
+| Copilot Autofix | Leave **On** |
+| Agentic autofix | Leave **Off** (uses paid credits) |
+| Check runs failure threshold | Security alerts: **High or higher** · Other alerts: **Only errors** |
+| Secret Protection > Push protection | **On** if the toggle is shown; public repos have it on already |
 
-## Step 3. Same page > Code scanning > CodeQL analysis
+## Step 3. Same page > Code Security > Tools > CodeQL analysis
 1. Click **Set up**, choose **Default**.
 2. In the box that opens, leave languages and query suite as shown, click **Enable CodeQL**.
 3. Left sidebar > **Secrets and variables > Actions** > **Variables** tab > **New repository variable**.
