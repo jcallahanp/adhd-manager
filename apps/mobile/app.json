@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "ADHD Manager",
+    "slug": "adhd-manager",
+    "version": "0.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "platforms": ["android"],
+    "android": { "package": "com.jcallahanp.adhdmanager" }
+  }
+}

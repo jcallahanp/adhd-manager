@@ -1,3 +1,7 @@
 packages:
   - "apps/*"
   - "packages/*"
+# These ship prebuilt binaries; their install scripts are not needed.
+ignoredBuiltDependencies:
+  - "@parcel/watcher"
+  - unrs-resolver

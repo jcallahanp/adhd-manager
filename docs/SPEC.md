@@ -9,3 +9,4 @@ TBD: capture by voice, Claude triage (do now, automate, quick task, long-term go
 D-002: pnpm + Turborepo. `apps/mobile` Expo (Android first), `apps/web` Next.js, `apps/worker` Node worker, `packages/core` shared types and Zod schemas, `supabase/` migrations and RLS, `deploy/` Compose and Caddy, `evals/` triage cases. Users bring their own Anthropic API key.
 
 ## Change notes
+- 2026-10-25 · D-005 · Two Expo dev-CLI advisories allowed in the security checks; no product change.

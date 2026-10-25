@@ -2,7 +2,9 @@
   "name": "adhd-platform",
   "private": true,
   "packageManager": "pnpm@10.34.8",
-  "engines": { "node": ">=24" },
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
@@ -11,6 +13,12 @@
     "ci": "turbo run lint typecheck test build"
   },
   "devDependencies": {
-    "turbo": "2.11.10"
+    "@eslint/js": "9.39.5",
+    "@types/node": "24.19.2",
+    "eslint": "9.39.5",
+    "turbo": "2.11.10",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.2",
+    "vitest": "5.0.5"
   }
 }
