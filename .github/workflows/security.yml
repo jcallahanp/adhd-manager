@@ -41,6 +41,8 @@ jobs:
       - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
           fail-on-severity: high
+          # D-005: node-forge reached only via @expo/cli (dev CLI, not in the app); no fixed release exists.
+          allow-ghsas: GHSA-86w9-cpqp-85rv
           deny-licenses: GPL-3.0-only, GPL-3.0-or-later
           comment-summary-in-pr: on-failure
 

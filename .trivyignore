@@ -1,0 +1,3 @@
+# D-005: zod 3 reached only via @expo/cli (dev CLI, not in the app); fixed only in zod 4, which @expo/cli does not support.
+# Remove when @expo/cli moves to zod 4.
+CVE-2023-54404
