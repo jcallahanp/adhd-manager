@@ -1,6 +1,6 @@
 # Sort a thought: design
 
-Task M0-03 · 2026-10-25 · Decisions: D-006 · Status: draft, waiting on John's approval
+Task M0-03 · 2026-10-25 · Decisions: D-006 · Status: approved by John 2026-10-25
 
 ## What John gets
 Open the web dashboard on any browser (phone included), sign in, type a thought or a ramble, and within about ten seconds see it split into separate items, each filed into one of seven buckets. Items Claude is unsure about wait at the top of the inbox with the two likeliest buckets as buttons. Any item moves to another bucket in one tap.
