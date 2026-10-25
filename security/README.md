@@ -15,6 +15,8 @@ Two layers: continuous checks on every change, and a gate at every milestone. No
 
 All third-party actions are pinned to commit SHAs (D-001). Dependabot bumps them weekly.
 
+The Security tab, CodeQL and dependency review need a public repo or GitHub Code Security (repo variable `CODE_SCANNING=true`, D-003). Without it Trivy and zizmor print to the job log and fail on high or critical findings.
+
 ## Milestone gate (`security-gate.yml`, run by the `security-tester` agent)
 1. Run the workflow with the staging URL; download every artifact.
 2. Semgrep SAST, Trivy image scan of every Dockerfile, ZAP full and API scans, testssl.sh.
