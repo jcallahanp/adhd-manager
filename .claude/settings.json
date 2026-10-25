@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "extraKnownMarketplaces": {
+    "superpowers-dev": {
+      "source": { "source": "github", "repo": "jcallahanp/superpowers" }
+    }
+  },
+  "enabledPlugins": {
+    "superpowers@superpowers-dev": true
+  },
+  "permissions": {
+    "deny": [
+      "Read(./.env)",
+      "Read(./**/.env)",
+      "Read(./**/*.env)",
+      "Read(./**/secrets/**)",
+      "Read(./**/*.pem)",
+      "Read(./**/*.key)",
+      "Read(./**/node_modules/**)",
+      "Read(./**/package-lock.json)",
+      "Read(./**/pnpm-lock.yaml)",
+      "Read(./**/yarn.lock)",
+      "Read(./**/poetry.lock)",
+      "Read(./**/uv.lock)",
+      "Read(./**/pubspec.lock)",
+      "Read(./**/dist/**)",
+      "Read(./**/build/**)",
+      "Read(./**/.next/**)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard origin/main:*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          { "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh\"", "timeout": 10 }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "manual|auto",
+        "hooks": [
+          { "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/pre-compact.sh\"", "timeout": 10 }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/stop-gate.sh\"", "timeout": 10 }
+        ]
+      }
+    ]
+  }
+}

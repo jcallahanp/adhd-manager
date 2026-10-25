@@ -1,0 +1,7 @@
+This app stores one person's tasks, notes and reading history and sends logged text to the Anthropic API for triage.
+Pay extra attention to:
+- Any query or endpoint that could return another user's rows (missing user scoping, IDOR).
+- Logged text reaching tool calls, URLs, shell commands, SQL or other users' data (prompt injection, OWASP LLM01 and LLM06).
+- Users' own Anthropic API keys: stored only encrypted, never logged, never returned to any client, never used for another user's request.
+- API keys or user content written to logs, analytics or error reports.
+- Automations that act on the user's behalf (ordering, payments, messages) without an explicit user confirmation step.

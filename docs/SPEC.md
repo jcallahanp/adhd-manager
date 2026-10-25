@@ -1,0 +1,11 @@
+# Spec
+
+What we are building. Filled from the scope and stack thread. Each change note is dated and names its D-nnn.
+
+## Product
+TBD: capture by voice, Claude triage (do now, automate, quick task, long-term goal, park, idea), learning and second-brain loop, web dashboard and mobile app.
+
+## Stack and layout
+D-002: pnpm + Turborepo. `apps/mobile` Expo (Android first), `apps/web` Next.js, `apps/worker` Node worker, `packages/core` shared types and Zod schemas, `supabase/` migrations and RLS, `deploy/` Compose and Caddy, `evals/` triage cases. Users bring their own Anthropic API key.
+
+## Change notes

@@ -1,0 +1,45 @@
+name: claude-security-review
+# Claude reads each PR diff for security bugs and comments on the PR.
+# Needs the repository secret ANTHROPIC_API_KEY; skipped when it is not set or the PR is a draft.
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: claude-security-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Check for API key
+        id: key
+        env:
+          KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: echo "present=$([ -n "$KEY" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: steps.key.outputs.present == 'true'
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
+          persist-credentials: false
+      - uses: anthropics/claude-code-security-review@0c6a49f1fa56a1d472575da86a94dbc1edb78eda # main 2026-10-25
+        if: steps.key.outputs.present == 'true'
+        with:
+          comment-pr: true
+          claude-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude-model: ${{ vars.CLAUDE_REVIEW_MODEL }}
+          exclude-directories: docs,node_modules,build,dist
+          custom-security-scan-instructions: .github/claude-security-instructions.txt
