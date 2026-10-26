@@ -1,0 +1,14 @@
+# M1 Sort a thought
+
+Goal: the feature in `docs/superpowers/specs/2026-10-25-sort-a-thought-design.md` (D-006), live on John's server. One task per session and PR, in order; each is test first and ends with `make ci` green, a log entry and STATUS.
+
+1. **M1-01 Local Supabase in CI.** `supabase/` (CLI config, first migration), a CI job that starts it and runs SQL tests (pgTAP). Tables: `profiles`, `api_keys` (ciphertext, last4), `captures` (id client-made, raw_text, status `queued|needs_key|processing|done|failed`), `items` (capture_id, source_span, title, bucket, confidence, alt_bucket, due_date, due_inferred, status `filed|needs_answer`), `triage_corrections`. RLS on all; tests that user A cannot read or write user B's rows. Public sign-up off.
+2. **M1-02 Triage contract in core.** `packages/core`: bucket enum (7), Zod schema for Claude's reply, `decideStatus(confidence, threshold)`, AES-256-GCM `encryptKey`/`decryptKey`. Unit tests only.
+3. **M1-03 Queue and worker triage.** Trigger puts new captures on pgmq; worker polls, decrypts the owner's key, calls the Anthropic SDK (`TRIAGE_MODEL`, cached system prompt, capture in delimiters, no tools, structured output), validates, writes items, sets status. Retries 3 with backoff; 401 → `needs_key`. Tests with the Claude client mocked, plus one SQL-level integration test.
+4. **M1-04 Triage evals.** `evals/triage/cases.jsonl` (~30 captures, expected buckets and splits), recorded replies checked in CI, `workflow_dispatch` workflow for a live run with the `ANTHROPIC_API_KEY` secret. Prompt tuned until the live run passes 90% of bucket labels.
+5. **M1-05 Web sign-in and settings.** `apps/web`: Supabase SSR auth (email and password), Settings page saving the key through a server action (encrypt server-side, show last 4 only), admin script `scripts/create-user.ts`. Tests: component tests and a key never appears in any client payload.
+6. **M1-06 Web capture and inbox.** Capture box; inbox with "Needs your answer" first, filed by bucket, inferred-date marker, link to original, Realtime updates, one-tap move writing a correction, Retry on `failed`, Settings link on `needs_key`. Playwright end-to-end test against local Supabase with Claude stubbed.
+7. **M1-07 Deploy.** `deploy/compose.yml` (self-hosted Supabase, web, worker, Caddy), `.env.example` entries, nightly `pg_dump` with 7-day retention, Dockerfiles (re-enable the Dependabot docker entry), deploy workflow over SSH on merge to `main`. John's steps, batched with exact screens: create a 2 GB DigitalOcean droplet, point a domain's A record at it, add the deploy secrets in GitHub. Gate: the design's "Done when" on John's phone, then the M1 security gate (`security/README.md`).
+
+Parallel: M1-02 can run beside M1-01; everything else is sequential.
+Verification per task: `make ci` green in CI; M1-07 adds John's check on his phone.
