@@ -48,3 +48,16 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: make ci
+
+  database:
+    # M1-01: local Supabase in Docker; pgTAP tests prove RLS isolation, plus the sign-up-off check.
+    name: Database (RLS isolation)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v3.0.1
+        with:
+          version: 2.120.0
+      - run: make db-test
