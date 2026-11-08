@@ -13,12 +13,12 @@
     "ci": "turbo run lint typecheck test build"
   },
   "devDependencies": {
-    "@eslint/js": "9.39.5",
-    "@types/node": "24.19.2",
-    "eslint": "9.39.5",
+    "@eslint/js": "10.0.1",
+    "@types/node": "26.6.6",
+    "eslint": "10.14.0",
     "turbo": "2.11.10",
-    "typescript": "6.0.3",
-    "typescript-eslint": "8.71.2",
+    "typescript": "7.0.2",
+    "typescript-eslint": "8.72.1",
     "vitest": "5.0.5"
   }
 }
